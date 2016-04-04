@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+
+VERSION_FILE        = "VERSION".freeze
+major, minor, build = IO.read(VERSION_FILE).split(".").map(&:to_i)
+
+target_version = case ARGV[0]
+  when "major" then [major + 1, 0, 0].join(".")
+  when "minor" then [major, minor + 1, 0].join(".")
+  else              [major, minor, build + 1].join(".")
+end
+
+cmds = [
+  "git checkout develop",
+  "git pull origin develop",
+  "git checkout master",
+  "git pull origin master",
+  "git merge develop",
+  "echo #{target_version} > #{VERSION_FILE}",
+  "git add #{VERSION_FILE}",
+  "git commit --message 'Bump version to #{target_version}'",
+  "git tag --annotate v#{target_version} --message 'version #{target_version}'",
+  "git push origin master --tags",
+  "git checkout develop",
+  "git merge master",
+  "git push origin develop"
+]
+
+cmds.each do |cmd|
+  puts "=" * 80
+  puts "= #{cmd}"
+  exit unless system cmd
+end
