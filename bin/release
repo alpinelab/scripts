@@ -18,7 +18,7 @@ cmds = [
   "echo #{target_version} > #{VERSION_FILE}",
   "git add #{VERSION_FILE}",
   "git commit --message 'Bump version to #{target_version}'",
-  "git tag --annotate v#{target_version} --message 'version #{target_version}'",
+  "git tag --annotate v#{target_version} --message 'version #{target_version} [skip ci]'",
   "git push origin master --tags",
   "git checkout develop",
   "git merge master",
